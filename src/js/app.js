@@ -11,7 +11,7 @@ import { speak } from "./tts.js";
 
 class EmotionalVolumeApp {
   constructor() {
-    this.currentVolume = 30; // 0 - 100
+    this.currentVolume = 75; // 0 - 100, start loud!
     this.trustLevel = 40; // 0 - 100
     this.mood = "neutral";
     this.isHurt = false;

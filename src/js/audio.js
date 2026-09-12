@@ -7,7 +7,7 @@ export class AudioEngine {
     this.ctx = null;
     this.masterGain = null;
     this.analyser = null;
-    this.volume = 0.3; // Default 30%
+    this.volume = 0.75; // Default 75% - loud enough to hear!
     this.isPlaying = false;
     this.currentTrack = "why_me"; // Default to user's Spotify requested song!
     this.timerId = null;
@@ -58,13 +58,19 @@ export class AudioEngine {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AudioCtx();
 
+      // Booster pre-amp node: amplifies all audio by 2.5x before master gain
+      this.boosterGain = this.ctx.createGain();
+      this.boosterGain.gain.setValueAtTime(2.5, this.ctx.currentTime);
+
       this.masterGain = this.ctx.createGain();
       this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
 
       this.analyser = this.ctx.createAnalyser();
       this.analyser.fftSize = 64;
 
-      this.masterGain.connect(this.analyser);
+      // Chain: sources -> boosterGain -> masterGain -> analyser -> destination
+      this.masterGain.connect(this.boosterGain);
+      this.boosterGain.connect(this.analyser);
       this.analyser.connect(this.ctx.destination);
     }
 
@@ -78,9 +84,11 @@ export class AudioEngine {
       this.audioElement = new Audio();
       this.audioElement.crossOrigin = "anonymous";
       this.audioElement.loop = true;
+      this.audioElement.volume = 1.0; // Always max HTML5 volume, let Web Audio control gain
     }
     if (this.audioElement.src !== url) {
       this.audioElement.src = url;
+      this.audioElement.volume = 1.0;
     }
     if (this.ctx && !this.mediaSourceNode) {
       try {
@@ -97,8 +105,9 @@ export class AudioEngine {
     if (this.masterGain && this.ctx) {
       this.masterGain.gain.setTargetAtTime(this.volume, this.ctx.currentTime, 0.05);
     }
+    // Keep HTML5 audio element at max (1.0) and let Web Audio booster control perceived volume
     if (this.audioElement) {
-      this.audioElement.volume = this.volume;
+      this.audioElement.volume = 1.0;
     }
   }
 
@@ -120,7 +129,7 @@ export class AudioEngine {
       this.stopSynth();
       this.initAudioStream(track.url);
       if (this.audioElement) {
-        this.audioElement.volume = this.volume;
+        this.audioElement.volume = 1.0; // Always max - Web Audio booster handles gain
         this.audioElement.playbackRate = this.playbackSpeed || 1.0;
         this.audioElement.play().catch(() => {
           // If streaming blocked, fallback to synth notes
@@ -177,12 +186,12 @@ export class AudioEngine {
     const bassFreq = track.bass[this.noteStep % track.bass.length];
 
     if (this.volume > 0.01) {
-      // Warm sine melody oscillator for "Raave" & stream fallbacks
+      // Warm sine melody oscillator for "Raave" & stream fallbacks — boosted gain!
       const synthType = (this.currentTrack === "raave" || this.currentTrack === "why_me") ? "sine" : "triangle";
-      this.playSynthNote(freq * (speed > 1.5 ? 1.5 : 1), 0.22 / speed, synthType, 0.35);
+      this.playSynthNote(freq * (speed > 1.5 ? 1.5 : 1), 0.22 / speed, synthType, 0.85);
       
       if (this.noteStep % 2 === 0) {
-        this.playSynthNote(bassFreq * (speed > 1.5 ? 1.5 : 1), 0.3 / speed, "sine", 0.4);
+        this.playSynthNote(bassFreq * (speed > 1.5 ? 1.5 : 1), 0.3 / speed, "sine", 0.9);
       }
     }
 
