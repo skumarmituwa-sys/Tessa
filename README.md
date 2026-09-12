@@ -54,3 +54,11 @@ For Software:
 - **3x Speed Freakout & Reverse Rewind Mode**: Insults trigger a 3.0x speed audio/visual freakout that flips the UI upside-down. The upright **Reverse ⚡ (3x Speed)** button rewinds the screen back upright while speaking Malayalam out loud at 3x speed!
 - **Malayalam Text-To-Speech (TTS)**: Bytey speaks out loud in Malayalam (`ml-IN`) for compliments, freakouts, crying lines, and reverse rewinds.
 - **Music Engine ("Raave" & Spotify "Why Me")**: Plays synthesized Malayalam melody presets ("Raave") and streams Spotify preview audio ("Why Me" by Manhar & Richie) connected to dynamic equalizer canvas visualizers.
+
+###Screenshots
+<img width="1892" height="911" alt="Screenshot 2026-09-12 141020" src="https://github.com/user-attachments/assets/4dad7d63-71fc-4cbb-b4bd-9eb648d6c3bd" />
+<img width="1887" height="906" alt="Screenshot 2026-09-12 141246" src="https://github.com/user-attachments/assets/c05c07a8-5b9c-446b-95a3-d277b1f432b2" />
+<img width="1875" height="906" alt="Screenshot 2026-09-12 141523" src="https://github.com/user-attachments/assets/f5693bbb-3f10-4306-92cf-97c81d0c5fd5" />
+
+
+
