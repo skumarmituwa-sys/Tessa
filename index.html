@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bytey — Emotional Volume Slider</title>
+  <meta name="description" content="Talk to me, if you only want to praise me!!!! Type compliments in English or Malayalam to raise volume!">
+  <link rel="stylesheet" href="./src/styles/main.css">
+</head>
+<body>
+
+  <!-- Fake Boot Sequence Overlay -->
+  <div id="boot-overlay" class="boot-overlay">
+    <div class="boot-box">
+      <div id="boot-log"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container & Confetti -->
+  <div id="toast-container"></div>
+  <div id="confetti-container"></div>
+
+  <!-- App Shell Wrapper (Rotates on Insult) -->
+  <div class="app-shell" id="app-shell">
+
+    <!-- Header Navigation Bar -->
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">EMOTIONAL AUDIO SYSTEM</p>
+        <h1>Bytey</h1>
+        <p class="header-description">
+          Talk to me, if you only want to praise me!!!!
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <button id="freakout-btn" class="button button-danger" aria-label="Trigger 3x Speed Freakout">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+          <span>Freakout 🔥</span>
+        </button>
+        <button id="tts-toggle-btn" class="button button-secondary active" aria-label="Toggle Voice Speech">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          <span>Voice: On</span>
+        </button>
+        <button id="audio-toggle-btn" class="button button-secondary" aria-label="Toggle Synthesizer Music">
+          <svg class="icon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <span>Start Music</span>
+        </button>
+        <button id="achievements-modal-btn" class="button button-secondary" aria-label="View Badges">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+          <span>Badges</span>
+        </button>
+        <button id="info-modal-btn" class="button button-secondary" aria-label="View Project Brief">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>Project brief</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <div class="dashboard">
+      <main class="dashboard-grid">
+
+        <!-- Left Column: Primary Interaction -->
+        <div class="left-column">
+
+          <!-- Bytey Display Panel -->
+          <section class="bytey-panel">
+            <div class="bytey-screen">
+              <div id="avatar-container"></div>
+              <div class="bytey-status">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="bytey-status-text">Bytey is listening</span>
+              </div>
+            </div>
+
+            <div class="bytey-caption">
+              <span class="caption-label">CURRENT MOOD</span>
+              <strong id="bytey-mood-title">Feeling appreciated</strong>
+              <span class="malayalam-label" id="bytey-mood-ml">സന്തോഷത്തിലാണ്</span>
+              <p id="bytey-mood-desc">Keep talking nicely to increase the volume.</p>
+
+              <div id="speech-bubble" class="speech-bubble active">
+                Praise me or suffer in absolute silence!
+              </div>
+            </div>
+          </section>
+
+          <!-- Main Talk Panel (Input Box near the top!) -->
+          <section class="panel talk-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">TALK TO BYTEY</span>
+                <h2>Say something nice</h2>
+                <span class="malayalam-label">നല്ലതു സംസാരിക്കൂ</span>
+              </div>
+              <div class="frantic-gauge-container">
+                <span class="panel-kicker">Frantic Meter:</span>
+                <div class="frantic-gauge-bar">
+                  <div id="frantic-gauge-fill" class="frantic-gauge-fill"></div>
+                </div>
+                <span id="frantic-score-val" style="font-family: var(--font-code); font-weight:700;">0.0</span>
+              </div>
+            </div>
+
+            <textarea
+              id="sentiment-input"
+              placeholder="Type in English or Malayalam (e.g. YOU ARE THE MOST BEAUTIFUL MACHINE EVER CREATED / നീ സൂപ്പർ ആണ്)..."
+              rows="3"
+            ></textarea>
+
+            <div class="input-actions">
+              <button id="send-btn" class="button button-primary">
+                Send message
+              </button>
+              <button id="voice-btn" class="button button-secondary">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                <span>Speak</span>
+              </button>
+              <button id="prompt-btn" class="button button-secondary">
+                <span>Desperate Prompt</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Master Volume Panel -->
+          <section class="panel volume-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">AUDIO OUTPUT</span>
+                <h2>Master volume</h2>
+                <span class="malayalam-label">വോളിയം ലെവൽ</span>
+              </div>
+
+              <span id="volume-display" class="volume-value">30%</span>
+            </div>
+
+            <div class="slider-container">
+              <div id="slider-track" class="slider-track" title="Direct dragging forbidden!">
+                <div id="slider-fill" class="slider-fill"></div>
+                <div id="slider-thumb" class="slider-thumb" tabindex="0"></div>
+              </div>
+            </div>
+
+            <canvas id="visualizer-canvas" class="visualizer-canvas"></canvas>
+
+            <p class="helper-text">
+              Compliments raise the volume. Insults mute Bytey.
+            </p>
+          </section>
+
+        </div>
+
+        <!-- Right Column: Relationship, Settings, History & Terminal -->
+        <div class="right-column">
+
+          <!-- Machine Relationship Panel -->
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">RELATIONSHIP</span>
+                <h2>Machine relationship</h2>
+                <span class="malayalam-label">കമ്പ്യൂട്ടറുമായുള്ള ബന്ധം</span>
+              </div>
+              <span id="trust-title-badge" class="trust-badge">Stranger 😶</span>
+            </div>
+            <div class="trust-bar-bg">
+              <div id="trust-bar-fill" class="trust-bar-fill"></div>
+            </div>
+          </section>
+
+          <!-- Settings Panel -->
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">PREFERENCES</span>
+                <h2>Settings</h2>
+              </div>
+            </div>
+            <div class="settings-grid">
+              <div class="setting-group">
+                <label for="personality-select" class="setting-label">Personality</label>
+                <select id="personality-select" class="select-input">
+                  <option value="standard">Standard PC</option>
+                  <option value="tsundere">Tsundere Laptop</option>
+                  <option value="hype">Hype Machine</option>
+                  <option value="philosopher">Philosopher PC</option>
+                </select>
+              </div>
+
+              <div class="setting-group">
+                <label for="track-select" class="setting-label">Music Track</label>
+                <select id="track-select" class="select-input">
+                  <option value="why_me" selected>Why Me (Spotify - Manhar, Richie 🎧)</option>
+                  <option value="raave">Raave (Malayalam Hit Melody 🎵)</option>
+                  <option value="synthwave">Cyberpunk Synthwave ⚡</option>
+                  <option value="lofi">Chill Lofi Beats ☕</option>
+                  <option value="chiptune">8-Bit Arcade Hero 🕹️</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="toggle-label">
+                <input type="checkbox" id="decay-toggle" />
+                <span>Boredom Decay (Volume drops if idle)</span>
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="sensitivity-checkbox" />
+                <span>Make Computer More Sensitive</span>
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="disable-manipulation-checkbox" />
+                <span>Disable Emotional Manipulation</span>
+              </label>
+            </div>
+          </section>
+
+          <!-- Session Statistics Panel -->
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">SESSION DATA</span>
+                <h2>Statistics</h2>
+              </div>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-title">Praise Streak</span>
+                <span id="stat-streak" class="stat-val">0 🔥</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-title">Total Praise</span>
+                <span id="stat-compliments" class="stat-val">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-title">Mutes</span>
+                <span id="stat-mutes" class="stat-val">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-title">Top Frantic</span>
+                <span id="stat-frantic" class="stat-val">0.0</span>
+              </div>
+              <div class="stat-item" style="grid-column: span 2;">
+                <span class="stat-title">Drag Blocked</span>
+                <span id="stat-drags" class="stat-val">0</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Praise History Drawer -->
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">HISTORY</span>
+                <h2>Praise log</h2>
+              </div>
+              <button id="export-love-btn" class="button button-secondary" style="min-height:32px; padding:0 10px; font-size:12px;">
+                Export Love 📄
+              </button>
+            </div>
+            <div id="compliment-history-list" class="history-container">
+              <span style="color:var(--muted); font-size:12px;">No compliments recorded yet.</span>
+            </div>
+          </section>
+
+          <!-- Cyber Terminal Console -->
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">SYSTEM LOG</span>
+                <h2>Console</h2>
+              </div>
+            </div>
+            <div id="terminal-output" class="terminal-output"></div>
+          </section>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div> <!-- End App Shell -->
+
+  <!-- Achievements Modal -->
+  <div id="achievements-overlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Relationship Badges & Achievements</h2>
+        <button id="close-achievements-btn" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="achievements-list" class="achievements-grid">
+          <div class="achievement-badge unlocked">
+            <strong>Welcome to Silicon Love</strong>
+            <p>Start the Emotional Volume Slider.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Educational / Student Project Info Modal -->
+  <div id="info-modal-overlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Project Brief & Architecture</h2>
+        <button id="close-modal-btn" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Concept:</strong> An intentionally impractical, hilarious UX experiment where the volume slider refuses direct manual dragging. Volume rises only when you shower Bytey with increasingly frantic compliments!</p>
+        
+        <h3>📐 Sentiment & Frantic Scoring Formula</h3>
+        <code>Frantic Score = (Weighted Compliments) + Exclamations (!) + (Emojis × 1.5) + (ALL CAPS ? +5 : 0)</code>
+        <p><strong>Volume Delta:</strong> <code>ΔV = min(35, 2 + Frantic Score × 2.2)</code></p>
+
+        <h3>🗣️ Text-To-Speech (TTS) Voice Engine</h3>
+        <p>Automatic Malayalam (ml-IN) & English (en-IN) voice synthesis! Bytey speaks sassy comebacks when insulted, and cute shy remarks when over-complimented.</p>
+
+        <h3>💔 7 Emotional Mood States</h3>
+        <p>Loved 🥰 • Content 😊 • Neutral 😐 • Lonely 🌧️ • Offended 😠 • Betrayed 💔 • Heartbroken 😭</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
