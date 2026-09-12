@@ -3,12 +3,12 @@
 # Bytey — Emotional Volume Slider 🎯
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: Avishyam illathavar
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Team Lead: Isha Rose Biju - Vimal Jyothi Engineering College
+- Member 2: Mituwa S Kumar - Vimal Jyothi Engineering College
+
 
 ### Project Description
 A delightfully absurd volume controller that refuses to be dragged directly. The volume increases ONLY when you type increasingly frantic, over-the-top compliments to Bytey in English or Malayalam, and drops to 0% (Muted) with a 3x speed freakout if you insult it!
